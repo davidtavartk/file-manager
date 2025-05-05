@@ -4,34 +4,37 @@ import { mkdir, unlink, rename, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 export const cat = async (args) => {
-  const filePath = args[0];
-  
-  if (!filePath) {
-    throw new Error('Invalid input');
-  }
-  
-  try {
-    const absolutePath = path.resolve(process.cwd(), filePath);
+    const filePath = args[0];
     
-    await stat(absolutePath);
+    if (!filePath) {
+      throw new Error('Invalid input');
+    }
     
-    const readStream = createReadStream(absolutePath, { encoding: 'utf8' });
-    
-    readStream.on('error', () => {
+    try {
+      const absolutePath = path.resolve(process.cwd(), filePath);
+
+      const fileStats = await stat(absolutePath);
+      if (!fileStats.isFile()) {
+        throw new Error('Not a file');
+      }
+      
+      const readStream = createReadStream(absolutePath, { encoding: 'utf8' });
+      
+      await new Promise((resolve, reject) => {
+        readStream.on('error', () => {
+          reject(new Error('Operation failed'));
+        });
+        
+        readStream.pipe(process.stdout);
+        
+        readStream.on('end', () => {
+          resolve();
+        });
+      });
+    } catch (error) {
       throw new Error('Operation failed');
-    });
-    
-    await new Promise((resolve, reject) => {
-      readStream.pipe(process.stdout);
-      readStream.on('end', resolve);
-      readStream.on('error', reject);
-    });
-    
-    console.log();
-  } catch (error) {
-    throw new Error('Operation failed');
-  }
-};
+    }
+  };
 
 export const add = async (args) => {
   const fileName = args[0];
