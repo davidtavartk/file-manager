@@ -9,7 +9,8 @@ import {
   rm,
 } from "./basic-operations.js";
 import { os_info } from "./os-info.js";
-import { hash } from './hash.js';
+import { hash } from "./hash.js";
+import { compress, decompress } from "./compression.js";
 
 const commands = {
   up,
@@ -24,6 +25,8 @@ const commands = {
   rm,
   os: os_info,
   hash,
+  compress,
+  decompress,
 };
 
 export const executeCommand = async (input) => {
