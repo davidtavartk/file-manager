@@ -37,18 +37,20 @@ export const ls = async () => {
     
     directories.sort((a, b) => a.name.localeCompare(b.name));
     files.sort((a, b) => a.name.localeCompare(b.name));
-
-    console.log('Name\t\t\tType');
-    console.log('-----------------------------');
     
-    directories.forEach(dir => {
-      console.log(`${dir.name}\t\t\tdirectory`);
-    });
+    const allItems = [...directories, ...files];
     
-    files.forEach(file => {
-      console.log(`${file.name}\t\t\tfile`);
+    console.log("(index)          Name                    Type");
+    console.log("---------------------------------------------------");
+    
+    allItems.forEach((item, index) => {
+      const indexStr = String(index).padEnd(15);
+      const nameStr = `'${item.name}'`.padEnd(24);
+      const typeStr = item.isDirectory() ? "'directory'" : "'file'";
+      
+      console.log(`${indexStr}${nameStr}${typeStr}`);
     });
   } catch (error) {
-    throw new Error('Failed to list directory contents');
+    throw new Error('Operation failed');
   }
 };
