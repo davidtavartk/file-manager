@@ -6,6 +6,7 @@ import {
   printCurrentDirectory,
   printInvalidInput,
 } from "./utils/messages.js";
+import { executeCommand } from "./commands/index.js";
 
 
 const startFileManager = () => {
@@ -22,13 +23,25 @@ const startFileManager = () => {
     process.exit(0);
   });
 
-  process.stdin.on("data", (data) => {
+  process.stdin.on("data", async (data) => {
     const input = data.toString().trim();
 
     if (input === ".exit") {
       printGoodbye(username);
       process.exit(0);
     }
+
+    if (input) {
+        try {
+          await executeCommand(input);
+        } catch (error) {
+          if (error.message === 'Invalid input') {
+            console.log('Invalid input');
+          } else {
+            console.log('Operation failed');
+          }
+        }
+      }
 
     printInvalidInput();
     printCurrentDirectory();
