@@ -8,6 +8,7 @@ import {
   mv,
   rm,
 } from "./basic-operations.js";
+import { os_info } from "./os-info.js";
 
 const commands = {
   up,
@@ -20,6 +21,7 @@ const commands = {
   cp,
   mv,
   rm,
+  os: os_info,
 };
 
 export const executeCommand = async (input) => {
